@@ -14,6 +14,8 @@ namespace PDC50FinalProject.ViewModel
     {
         private readonly StudentService _studentService;
         public ObservableCollection<Student> Students { get; set; }
+        public ObservableCollection<string> Courses { get; set; }
+        public ObservableCollection<string> GradeLevels { get; set; }
         private Student _selectedStudent;
         public Student SelectedStudent
         {
@@ -23,6 +25,29 @@ namespace PDC50FinalProject.ViewModel
                 _selectedStudent = value;
                 OnPropertyChanged();
                 UpdateEntryField();
+            }
+        }
+        private string _selectedCourse;
+        public string SelectedCourse
+        {
+            get => _selectedCourse;
+            set
+            {
+                _selectedCourse = value;
+                CourseInput = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _selectedGradeLevel;
+        public string SelectedGradeLevel
+        {
+            get => _selectedGradeLevel;
+            set
+            {
+                _selectedGradeLevel = value;
+                GradeInput = value; 
+                OnPropertyChanged();
             }
         }
 
@@ -120,9 +145,10 @@ namespace PDC50FinalProject.ViewModel
                 GenderInput = SelectedStudent.Gender;
                 ContactNoInput = SelectedStudent.ContactNo;
                 EmailInput = SelectedStudent.Email;
-                CourseInput = SelectedStudent.Course;
-                GradeInput = SelectedStudent.GradeLevel;
                 AttendanceInput = SelectedStudent.AttendanceRecords;
+
+                SelectedCourse = SelectedStudent.Course;
+                SelectedGradeLevel = SelectedStudent.GradeLevel;
             }
             else
             {
@@ -137,6 +163,9 @@ namespace PDC50FinalProject.ViewModel
             AddStudentCommand = new Command(async () => await AddStudents());
             UpdateStudentCommand = new Command(async () => await UpdateStudents());
             DeleteStudentCommand = new Command(async () => await DeleteStudents());
+
+            Courses = new ObservableCollection<string> { "BSIT", "BSCS", "BMMA" };
+            GradeLevels = new ObservableCollection<string> { "1st Year", "2nd Year", "3rd Year", "4th Year" };
         }
 
 

@@ -43,10 +43,14 @@
             <Entry Placeholder="Enter Contact No." Text="{Binding ContactNoInput}"/>
 
             <Label Text="Course"/>
-            <Entry Placeholder="Enter Course" Text="{Binding CourseInput}"/>
+            <Picker ItemsSource="{Binding Courses}"
+                    SelectedItem="{Binding SelectedCourse}"
+                    Title="Select a Course"/>
             
             <Label Text="Grade Level"/>
-            <Entry Placeholder="Enter Grade Level" Text="{Binding GradeInput}"/>
+            <Picker ItemsSource="{Binding GradeLevels}"
+                    SelectedItem="{Binding SelectedGradeLevel}"
+                    Title="Select a Course"/>
 
             <Label Text="Attendance Records"/>
             <Entry Placeholder="Enter Attendance Records" Text="{Binding AttendanceInput}"/>
