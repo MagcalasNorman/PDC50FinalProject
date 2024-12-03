@@ -5,15 +5,38 @@
              Title="StudentList">
     <ScrollView>
         <VerticalStackLayout>
-            <Button Text="Refresh List"
-                    Command="{Binding LoadStudentCommand}"/>
+            <Label Text="Filter Students"
+                   FontSize="Medium"
+                   FontAttributes="Bold"/>
+            
+            <Picker Title="Select Course"
+                    ItemsSource="{Binding Courses}"
+                    SelectedItem="{Binding SelectedCourseFilter}"/>
+            
+            <Picker Title="Select Grade Level"
+                    ItemsSource="{Binding GradeLevels}"
+                    SelectedItem="{Binding SelectedGradeLevelFilter}"/>
+            
+            <Button Text="Apply Filters"
+                    Command="{Binding FilterStudentsCommand}"/>
+            
+            <Label Text=""/>
 
-            <ListView ItemsSource="{Binding Students}" SelectedItem="{Binding SelectedStudent}">
+            <Button Text="Clear Filters"
+                    Command="{Binding ClearFilterCommand}"/>
+            
+            <Label Text=""/>
+
+            <Button Text="Refresh List"
+                    Command="{Binding LoadStudentCommand}"/> 
+
+            <ListView ItemsSource="{Binding FilteredStudents}" SelectedItem="{Binding SelectedStudent}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout Orientation="Horizontal"
-                                         Padding="10">
+                                         Padding="10"
+                                         >
                                 <Label Text="{Binding Name}" FontAttributes="Bold"/>
                                 <Label Text=" | "/>
                                 <Label Text="{Binding StudentID, StringFormat='ID Number: {0}'}"/>

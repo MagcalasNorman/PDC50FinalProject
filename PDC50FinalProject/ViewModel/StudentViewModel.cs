@@ -14,8 +14,16 @@ namespace PDC50FinalProject.ViewModel
     {
         private readonly StudentService _studentService;
         public ObservableCollection<Student> Students { get; set; }
-        public ObservableCollection<string> Courses { get; set; }
-        public ObservableCollection<string> GradeLevels { get; set; }
+        public ObservableCollection<Student> FilteredStudents { get; set; }
+        public ObservableCollection<string> Courses { get; } = new ObservableCollection<string>
+        {
+            "BSIT", "BSCS", "BMMA"
+        };
+
+        public ObservableCollection<string> GradeLevels { get; } = new ObservableCollection<string>
+        {
+            "1st Year", "2nd Year", "3rd Year", "4th Year"
+        };
         private Student _selectedStudent;
         public Student SelectedStudent
         {
@@ -47,6 +55,28 @@ namespace PDC50FinalProject.ViewModel
             {
                 _selectedGradeLevel = value;
                 GradeInput = value; 
+                OnPropertyChanged();
+            }
+        }
+
+        private string _selectedCourseFilter;
+        public string SelectedCourseFilter
+        {
+            get => _selectedCourseFilter;
+            set
+            {
+                _selectedCourseFilter = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _selectedGradeLevelFilter;
+        public string SelectedGradeLevelFilter
+        {
+            get => _selectedGradeLevelFilter;
+            set
+            {
+                _selectedGradeLevelFilter = value;
                 OnPropertyChanged();
             }
         }
@@ -163,24 +193,31 @@ namespace PDC50FinalProject.ViewModel
             AddStudentCommand = new Command(async () => await AddStudents());
             UpdateStudentCommand = new Command(async () => await UpdateStudents());
             DeleteStudentCommand = new Command(async () => await DeleteStudents());
+            FilterStudentsCommand = new Command(FilterStudents);
+            ClearFilterCommand = new Command(ClearFilters);
 
             Courses = new ObservableCollection<string> { "BSIT", "BSCS", "BMMA" };
             GradeLevels = new ObservableCollection<string> { "1st Year", "2nd Year", "3rd Year", "4th Year" };
+            FilteredStudents = new ObservableCollection<Student> (Students);
         }
 
 
-        public ICommand LoadStudentCommand { get; }
+       public ICommand LoadStudentCommand { get; }
         public ICommand AddStudentCommand { get; }
         public ICommand UpdateStudentCommand { get; }
         public ICommand DeleteStudentCommand { get; }
+        public ICommand FilterStudentsCommand { get; }
+        public ICommand ClearFilterCommand { get; }
         private async Task LoadStudents()
         {
             Students.Clear();
+            FilteredStudents.Clear();
 
             var students = await _studentService.GetStudentAsync();
             foreach (var student in students)
             {
                 Students.Add(student);
+                FilteredStudents.Add(student);
                 ClearInput();
             }
         }
@@ -243,6 +280,39 @@ namespace PDC50FinalProject.ViewModel
                 var result = await _studentService.DeleteUsersAsync(SelectedStudent.ID);
                 await LoadStudents();
                 ClearInput();
+            }
+        }
+
+        private void FilterStudents()
+        {
+            var filtered = Students.AsEnumerable();
+
+            if (!string.IsNullOrWhiteSpace(SelectedCourseFilter))
+            {
+                filtered = filtered.Where(s => s.Course == SelectedCourseFilter);
+            }
+
+            if (!string.IsNullOrWhiteSpace(SelectedGradeLevelFilter))
+            {
+                filtered = filtered.Where(s => s.GradeLevel== SelectedGradeLevelFilter);
+            }
+
+            FilteredStudents.Clear();
+            foreach(var student in filtered)
+            {
+                FilteredStudents.Add(student);
+            }
+        }
+
+        private void ClearFilters()
+        {
+            SelectedCourseFilter = null;
+            SelectedGradeLevelFilter = null;
+
+            FilteredStudents.Clear();
+            foreach(var student in Students)
+            {
+                FilteredStudents.Add(student);
             }
         }
     }
